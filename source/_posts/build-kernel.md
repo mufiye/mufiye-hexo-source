@@ -1,8 +1,10 @@
 ---
 title: build kernel
 date: 2022-05-30 19:40:13
-tags: kernel
+categories: kernel
 ---
+
+## 内核编译
 
 1. [openEuler kernel source code repo](https://gitee.com/openeuler/kernel ):    branch OLK-5.10
 
@@ -11,6 +13,7 @@ tags: kernel
 2. 应用该[patch](https://github.com/mufiye/mufiye_blog/blob/master/kernel_environment/0001-x86_64-debug.patch)使debug更方便
 
 3. config
+
   * 首先生成.config，有一些配置需要参考，比如gcc版本之类的（-j表示使用的核心数）
 
     ```shell

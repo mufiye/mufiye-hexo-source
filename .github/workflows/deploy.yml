@@ -44,6 +44,10 @@ jobs:
       - name: Install dependencies
         run: |
           npm install hexo-cli -g
+          npm install hexo-wordcount
+          npm install hexo-asset-image
+          npm install hexo-deployer-git
+          npm install hexo-generator-searchdb
           npm install
 
       - name: Deploy hexo

@@ -105,3 +105,10 @@ deploy:
   type: git
   repo: git@github.com:mufiye/mufiye.github.io.git
   branch: master
+
+# about search function in keep theme
+search:
+  path: search.json
+  field: post
+  content: true
+  format: striptags
