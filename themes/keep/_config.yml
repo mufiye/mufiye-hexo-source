@@ -46,7 +46,7 @@ style:
     progress_bar:
       enable: true
     percent:
-      enable: true
+      enable: false
 
 # ---------------------------------------------------------------------------------------
 # Social contact link
@@ -70,7 +70,7 @@ menu:
   Home: /
   Archives: /archives
   Categories: /categories
-  # Tags: /tags
+  Tags: /tags
   # Links: /links
   About: /about
   # Changelog: /changelog
@@ -104,7 +104,7 @@ post:
     enable: true
     auto: false # if true, show Lv1, Lv2, Lv3... , If false, show custom label
     # label array item can be one or more
-    custom_label_list: ["程序猿"]
+    custom_label_list: ["程序猿","内核新手"]
 
 # ---------------------------------------------------------------------------------------
 # Code copy
@@ -159,8 +159,8 @@ local_search:
 # Comment plugin
 # ---------------------------------------------------------------------------------------
 comment:
-  enable: false
-  use: valine # values: valine | gitalk | twikoo
+  enable: true
+  use: gitalk # values: valine | gitalk | twikoo
 
   # Valine
   # See: https://github.com/xCss/Valine
@@ -172,10 +172,10 @@ comment:
   # Gitalk
   # See: https://github.com/gitalk/gitalk
   gitalk:
-    github_id: # GitHub repo owner
-    repository: # Repository name to store issues
-    client_id: # GitHub Application Client ID
-    client_secret: # GitHub Application Client Secret
+    github_id: mufiye # GitHub repo owner
+    repository: mufiye_blog-gitalk-comments-repo # Repository name to store issues
+    client_id: 51136a001a6f1e0b7f45 # GitHub Application Client ID
+    client_secret: 723f7c05d0a3b94c21246d7494fb74962fbd6248 # GitHub Application Client Secret
 
   # Twikoo
   # See: https://github.com/imaegoo/twikoo
