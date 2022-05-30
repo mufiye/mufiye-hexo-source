@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node_version: [14.x]
+        node_version: [12.x]
 
     steps:
       - name: Checkout
@@ -29,7 +29,7 @@ jobs:
         with:
           repository: ${{ env.THEME_REPO }}
           ref: ${{ env.THEME_BRANCH }}
-          path: themes/concise
+          path: themes/keep
 
       - name: Checkout deploy repo
         uses: actions/checkout@v2
@@ -54,7 +54,7 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           git config --global user.name $GIT_USER
           git config --global user.email $GIT_EMAIL
-          cp _config.theme.yml themes/concise/_config.yml
+          cp _config.theme.yml themes/keep/_config.yml
 
       - name: Install dependencies
         run: |
