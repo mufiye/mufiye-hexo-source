@@ -394,9 +394,11 @@ mufiye_kernel(workspace)
 
 ### gdb配置成功截图
 
-<img src="./内核编译、启动以及gdb内核调试环境构建/gdb-success2.png" alt="gdb-success2" style="zoom:90%;" />
+<img src="/images/gdb-success2.png" alt="gdb-success2" style="zoom:90%;" />
 
 <center>gdb调试，成功断点start_kernel函数</center>
+
+
 # 参考
 
 1. https://github.com/chenxiaosonggithub/blog
