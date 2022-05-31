@@ -397,3 +397,19 @@ mufiye_kernel(workspace)
 <img src="./内核编译、启动以及gdb内核调试环境构建/gdb-success2.png" alt="gdb-success2" style="zoom:90%;" />
 
 <center>gdb调试，成功断点start_kernel函数</center>
+# 参考
+
+1. https://github.com/chenxiaosonggithub/blog
+2. 《Linux内核设计与实现》
+3. https://www.kernel.org/doc/htmldocs/kgdb/CompilingAKernel.html
+4. [qemu官方文档](https://qemu.readthedocs.io/en/latest/system/quickstart.html)
+5. [Getting started with qemu](https://drewdevault.com/2018/09/10/Getting-started-with-qemu.html)
+6. [Debugging kernel and modules via gdb](https://www.kernel.org/doc/Documentation/dev-tools/gdb-kernel-debugging.rst)
+7. [GDB官方文档](https://sourceware.org/gdb/current/onlinedocs/gdb/)
+8. [QEMU+gdb调试Linux内核全过程](https://blog.csdn.net/jasonLee_lijiaqi/article/details/80967912)
+9. [linux kernel调试环境](https://s3.shizhz.me/s3e1)
+10. [linux内存子系统 - qemu调试linux 内核启动](https://zhuanlan.zhihu.com/p/363827057)
+11. https://sourceware.org/legacy-ml/gdb/2016-08/msg00014.html
+12. [关于linux内核kgdb调试](https://linux.cn/forum.php?mod=viewthread&tid=16243)
+13. [关于hbreak和break](https://blog.51cto.com/u_11134889/2083650)
+
