@@ -48,12 +48,14 @@ mufiye_kernel(workspace)
 
   * 一些关于gdb调试的内核CONFIG选项：
 
+    需要注意的是CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT配置选项，5.12版本的linux内核新增了DEBUG_INFO_DWARF5配置选项，而5.18版本后DEBUG_INFO配置需要设置开启DEBUG_INFO_DWARF4和DEBUG_INFO_DWARF5中的一个。DWARF为调试信息格式，而DEBUG_INFO_DWARF4配置选项和DEBUG_INFO_DWARF5配置选项的区别是使用哪个版本的调试信息格式，v5版本拥有更优的数据压缩、更快的符号搜索能力以及其调试信息可以从可执行文件中分离出来，但是v5版本相比v4版本需要更高版本的工具链(gcc，gdb等)支持，因此我们设置DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT配置选项使其根据工具链决定使用的DWARF版本。
+    
     ```config
     CONFIG_KGDB=y
     CONFIG_DEBUG_BUGVERBOSE=y
     CONFIG_DEBUG_SECTION_MISMATCH=y  # 防止内联
     CONFIG_DEBUG_INFO=y
-    CONFIG_DEBUG_INFO_DWARF5=y  # 新版本特性，或设置CONFIG_DEBUG_INFO_DWARF4=y
+    CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y  # 新版本特性
     CONFIG_DEBUG_KERNEL=y
     CONFIG_FRAME_POINTER=y  # Makefile中选择GCC编译选项
     CONFIG_GDB_SCRIPTS=y  # gdb python
