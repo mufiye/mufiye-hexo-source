@@ -34,9 +34,9 @@ mufiye_kernel(workspace)
 3. config
   * 清理旧的编译生成的文件及其他配置等文件
 
-   ```shell
-   make mrproper
-   ```
+    ```shell
+    make mrproper
+    ```
 
   * 首先生成.config（运行make menuconfig后直接save）
 
@@ -53,6 +53,7 @@ mufiye_kernel(workspace)
     CONFIG_DEBUG_BUGVERBOSE=y
     CONFIG_DEBUG_SECTION_MISMATCH=y  # 防止内联
     CONFIG_DEBUG_INFO=y
+    CONFIG_DEBUG_INFO_DWARF5=y  # 新版本特性，或设置CONFIG_DEBUG_INFO_DWARF4=y
     CONFIG_DEBUG_KERNEL=y
     CONFIG_FRAME_POINTER=y  # Makefile中选择GCC编译选项
     CONFIG_GDB_SCRIPTS=y  # gdb python
