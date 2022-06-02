@@ -11,7 +11,7 @@ categories: 数据库
 
 ## 1.1 整体的设计架构：
 
-![database-storage-arch](/home/mufiye/mufiye_blog/source/images/database-storage-arch.png)
+![database-storage-arch](images/database-storage-arch.png)
 
 <center>图1：简单数据库的整体架构</center>
 
