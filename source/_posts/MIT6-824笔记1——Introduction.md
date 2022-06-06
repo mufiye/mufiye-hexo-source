@@ -1,11 +1,9 @@
 ---
-title: MIT6.824——Introduction
+title: MIT6.824笔记1——Introduction
 date: 2022-06-03 12:47:00
 tags: [MIT6.824, 分布式]
 categories: 分布式系统
 ---
-
-
 
 # Introduction
 
