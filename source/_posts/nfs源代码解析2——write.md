@@ -7,7 +7,7 @@ tags: [源码解析,文件系统,nfs,write]
 
 # 1. Client
 
-==Q：为什么也会调用nfs_file_write，但是如果断点在rpc_run_task函数栈中没有nfs_file_write？==
+**Q：为什么也会调用nfs_file_write，但是如果断点在rpc_run_task函数栈中没有nfs_file_write？**
 
 ```c
 write
@@ -44,7 +44,7 @@ write?
 
 # 2. Server
 
-==仔细研究nfsd4_write==
+**仔细研究nfsd4_write**
 
 ```c
 kthread

@@ -102,7 +102,7 @@ enum {
 
 ## 1.3 客户端改变方法计数
 
-==待仔细研究call_start函数！！！==
+**待仔细研究call_start函数！！！**
 
 ```c
 __rpc_execute
@@ -224,9 +224,9 @@ kthread
             nfsd4_increment_op_stats
 ```
 
-==待仔细研究nfsd4_proc_compound函数！！！==
+**待仔细研究nfsd4_proc_compound函数！！！**
 
-==Q：一次cat hello.txt操作多次执行nfsd4_increment_op_stats函数？==
+**Q：一次cat hello.txt操作多次执行nfsd4_increment_op_stats函数？**
 
 ```c
 static __be32 nfsd4_proc_compound(struct svc_rqst *rqstp)

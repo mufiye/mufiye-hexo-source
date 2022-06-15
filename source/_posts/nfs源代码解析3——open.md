@@ -11,7 +11,7 @@ tags: [源码解析,文件系统,nfs,open]
 
 ### 1）第一次cat
 
-==Q：为什么我一次cat shell命令会执行三次open？==
+**Q：为什么我一次cat shell命令会执行三次open？**
 
 ```c
 open
@@ -113,4 +113,4 @@ kthread
             nfsd4_open
 ```
 ### 2）第二次cat
-==Q：服务器端没有调用nfsd4_open函数？==
+**Q：服务器端没有调用nfsd4_open函数？**
