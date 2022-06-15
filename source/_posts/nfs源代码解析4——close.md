@@ -14,16 +14,16 @@ close
   task_work_run
     ____fput
       __fput
-    	nfs_file_release
-    	  nfs_file_clear_open_context
-    		put_nfs_open_context_sync
-    		  __put_nfs_open_context
-    			nfs4_close_context
-    			  nfs4_close_sync
-    				__nfs4_close
-    				  nfs4_do_close
-    				    rpc_run_task
-    					  rpc_execute
+        nfs_file_release
+          nfs_file_clear_open_context
+            put_nfs_open_context_sync
+              __put_nfs_open_context
+                nfs4_close_context
+                  nfs4_close_sync
+                    __nfs4_close
+                      nfs4_do_close
+                        rpc_run_task
+                          rpc_execute
 ```
 
 ## 1.2 
@@ -41,6 +41,6 @@ kthread
       svc_process_common
         nfsd_dispatch
           nfsd4_proc_compound
-     		nfsd4_close
+            nfsd4_close
 ```
 

@@ -29,7 +29,7 @@ kthread
 
 ==这是什么？（设置rpc_execute断点时捕捉到的，其会自动调用）==
 
-```
+```c
 kthread
   worker_thread
     process_one_work

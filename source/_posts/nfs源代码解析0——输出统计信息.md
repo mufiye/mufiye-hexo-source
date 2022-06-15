@@ -1,6 +1,6 @@
 ---
 title: nfs源代码解析0——输出统计信息
-date: 2022-06-15 14:07:16
+date: 2022-06-14 22:33:53
 categories: 操作系统内核
 tags: [源码解析,文件系统,nfs,procfs,统计信息]
 ---
@@ -118,10 +118,10 @@ read
   ksys_read
     vfs_read
       proc_reg_read
-    	pde_read
-     	  seq_read
-    		seq_read_iter
-    		  nfsd_proc_show
+        pde_read
+          seq_read
+            seq_read_iter
+              nfsd_proc_show
 ```
 ## 2.2 服务器端方法的枚举：
 
