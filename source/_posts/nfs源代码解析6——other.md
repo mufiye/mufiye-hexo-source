@@ -7,7 +7,7 @@ tags: [源码解析,文件系统,nfs,other]
 
 # 1. Delegation
 
-==这是什么？（设置rpc_execute断点时捕捉到的，其会自动调用）==
+**这是什么？（设置rpc_execute断点时捕捉到的，其会自动调用）**
 
 ```c
 kthread
@@ -27,7 +27,7 @@ kthread
 
 # 2. Sequence
 
-==这是什么？（设置rpc_execute断点时捕捉到的，其会自动调用）==
+**这是什么？（设置rpc_execute断点时捕捉到的，其会自动调用）**
 
 ```c
 kthread
