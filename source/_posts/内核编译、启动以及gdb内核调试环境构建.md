@@ -2,7 +2,7 @@
 title: 内核编译、启动以及gdb内核调试环境构建
 date: 2022-05-31 16:58:17
 tags: [内核编译,qemu,gdb,环境搭建]
-categories: 内核
+categories: 操作系统内核
 ---
 
 # 1. 相关软件包环境以及目录结构

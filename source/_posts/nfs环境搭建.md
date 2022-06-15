@@ -1,7 +1,7 @@
 ---
 title: nfs环境搭建
 date: 2022-05-31 19:44:12
-categories: 内核
+categories: 操作系统内核
 tags: [环境搭建,文件系统,nfs]
 ---
 

@@ -1,0 +1,255 @@
+---
+title: nfs源代码解析0——输出统计信息
+date: 2022-06-15 14:07:16
+categories: 操作系统内核
+tags: [源码解析,文件系统,nfs,procfs,统计信息]
+---
+
+# 1. Client
+
+## 1.1 读取/proc/net/rpc/nfs
+
+```c
+read
+  ksys_read
+    vfs_read
+      proc_reg_read
+        pde_read
+          seq_read
+            seq_read_iter
+              rpc_proc_show
+```
+## 1.2 客户端方法的枚举：
+
+```c
+/* in include/linux/nfs4.h */
+enum {
+	NFSPROC4_CLNT_NULL = 0,		/* Unused */
+	NFSPROC4_CLNT_READ,
+	NFSPROC4_CLNT_WRITE,
+	NFSPROC4_CLNT_COMMIT,
+	NFSPROC4_CLNT_OPEN,
+	NFSPROC4_CLNT_OPEN_CONFIRM,
+	NFSPROC4_CLNT_OPEN_NOATTR,
+	NFSPROC4_CLNT_OPEN_DOWNGRADE,
+	NFSPROC4_CLNT_CLOSE,
+	NFSPROC4_CLNT_SETATTR,
+	NFSPROC4_CLNT_FSINFO,
+	NFSPROC4_CLNT_RENEW,
+	NFSPROC4_CLNT_SETCLIENTID,
+	NFSPROC4_CLNT_SETCLIENTID_CONFIRM,
+	NFSPROC4_CLNT_LOCK,
+	NFSPROC4_CLNT_LOCKT,
+	NFSPROC4_CLNT_LOCKU,
+	NFSPROC4_CLNT_ACCESS,
+	NFSPROC4_CLNT_GETATTR,
+	NFSPROC4_CLNT_LOOKUP,
+	NFSPROC4_CLNT_LOOKUP_ROOT,
+	NFSPROC4_CLNT_REMOVE,
+	NFSPROC4_CLNT_RENAME,
+	NFSPROC4_CLNT_LINK,
+	NFSPROC4_CLNT_SYMLINK,
+	NFSPROC4_CLNT_CREATE,
+	NFSPROC4_CLNT_PATHCONF,
+	NFSPROC4_CLNT_STATFS,
+	NFSPROC4_CLNT_READLINK,
+	NFSPROC4_CLNT_READDIR,
+	NFSPROC4_CLNT_SERVER_CAPS,
+	NFSPROC4_CLNT_DELEGRETURN,
+	NFSPROC4_CLNT_GETACL,
+	NFSPROC4_CLNT_SETACL,
+	NFSPROC4_CLNT_FS_LOCATIONS,
+	NFSPROC4_CLNT_RELEASE_LOCKOWNER,
+	NFSPROC4_CLNT_SECINFO,
+	NFSPROC4_CLNT_FSID_PRESENT,
+
+	NFSPROC4_CLNT_EXCHANGE_ID,
+	NFSPROC4_CLNT_CREATE_SESSION,
+	NFSPROC4_CLNT_DESTROY_SESSION,
+	NFSPROC4_CLNT_SEQUENCE,
+	NFSPROC4_CLNT_GET_LEASE_TIME,
+	NFSPROC4_CLNT_RECLAIM_COMPLETE,
+	NFSPROC4_CLNT_LAYOUTGET,
+	NFSPROC4_CLNT_GETDEVICEINFO,
+	NFSPROC4_CLNT_LAYOUTCOMMIT,
+	NFSPROC4_CLNT_LAYOUTRETURN,
+	NFSPROC4_CLNT_SECINFO_NO_NAME,
+	NFSPROC4_CLNT_TEST_STATEID,
+	NFSPROC4_CLNT_FREE_STATEID,
+	NFSPROC4_CLNT_GETDEVICELIST,
+	NFSPROC4_CLNT_BIND_CONN_TO_SESSION,
+	NFSPROC4_CLNT_DESTROY_CLIENTID,
+
+	NFSPROC4_CLNT_SEEK,
+	NFSPROC4_CLNT_ALLOCATE,
+	NFSPROC4_CLNT_DEALLOCATE,
+	NFSPROC4_CLNT_LAYOUTSTATS,
+	NFSPROC4_CLNT_CLONE,
+	NFSPROC4_CLNT_COPY,
+	NFSPROC4_CLNT_OFFLOAD_CANCEL,
+
+	NFSPROC4_CLNT_LOOKUPP,
+	NFSPROC4_CLNT_LAYOUTERROR,
+	NFSPROC4_CLNT_COPY_NOTIFY,
+
+	NFSPROC4_CLNT_GETXATTR,
+	NFSPROC4_CLNT_SETXATTR,
+	NFSPROC4_CLNT_LISTXATTRS,
+	NFSPROC4_CLNT_REMOVEXATTR,
+	NFSPROC4_CLNT_READ_PLUS,
+};
+```
+
+## 1.3 客户端改变方法计数
+
+==待仔细研究call_start函数！！！==
+
+```c
+__rpc_execute
+  call_start
+```
+
+# 2. Server
+
+## 2.1 读取/proc/net/rpc/nfsd
+
+```c
+read
+  ksys_read
+    vfs_read
+      proc_reg_read
+    	pde_read
+     	  seq_read
+    		seq_read_iter
+    		  nfsd_proc_show
+```
+## 2.2 服务器端方法的枚举：
+
+```c
+/* in include/linux/nfs4.h */
+enum nfs_opnum4 {
+	OP_ACCESS = 3,
+	OP_CLOSE = 4,
+	OP_COMMIT = 5,
+	OP_CREATE = 6,
+	OP_DELEGPURGE = 7,
+	OP_DELEGRETURN = 8,
+	OP_GETATTR = 9,
+	OP_GETFH = 10,
+	OP_LINK = 11,
+	OP_LOCK = 12,
+	OP_LOCKT = 13,
+	OP_LOCKU = 14,
+	OP_LOOKUP = 15,
+	OP_LOOKUPP = 16,
+	OP_NVERIFY = 17,
+	OP_OPEN = 18,
+	OP_OPENATTR = 19,
+	OP_OPEN_CONFIRM = 20,
+	OP_OPEN_DOWNGRADE = 21,
+	OP_PUTFH = 22,
+	OP_PUTPUBFH = 23,
+	OP_PUTROOTFH = 24,
+	OP_READ = 25,
+	OP_READDIR = 26,
+	OP_READLINK = 27,
+	OP_REMOVE = 28,
+	OP_RENAME = 29,
+	OP_RENEW = 30,
+	OP_RESTOREFH = 31,
+	OP_SAVEFH = 32,
+	OP_SECINFO = 33,
+	OP_SETATTR = 34,
+	OP_SETCLIENTID = 35,
+	OP_SETCLIENTID_CONFIRM = 36,
+	OP_VERIFY = 37,
+	OP_WRITE = 38,
+	OP_RELEASE_LOCKOWNER = 39,
+
+	/* nfs41 */
+	OP_BACKCHANNEL_CTL = 40,
+	OP_BIND_CONN_TO_SESSION = 41,
+	OP_EXCHANGE_ID = 42,
+	OP_CREATE_SESSION = 43,
+	OP_DESTROY_SESSION = 44,
+	OP_FREE_STATEID = 45,
+	OP_GET_DIR_DELEGATION = 46,
+	OP_GETDEVICEINFO = 47,
+	OP_GETDEVICELIST = 48,
+	OP_LAYOUTCOMMIT = 49,
+	OP_LAYOUTGET = 50,
+	OP_LAYOUTRETURN = 51,
+	OP_SECINFO_NO_NAME = 52,
+	OP_SEQUENCE = 53,
+	OP_SET_SSV = 54,
+	OP_TEST_STATEID = 55,
+	OP_WANT_DELEGATION = 56,
+	OP_DESTROY_CLIENTID = 57,
+	OP_RECLAIM_COMPLETE = 58,
+
+	/* nfs42 */
+	OP_ALLOCATE = 59,
+	OP_COPY = 60,
+	OP_COPY_NOTIFY = 61,
+	OP_DEALLOCATE = 62,
+	OP_IO_ADVISE = 63,
+	OP_LAYOUTERROR = 64,
+	OP_LAYOUTSTATS = 65,
+	OP_OFFLOAD_CANCEL = 66,
+	OP_OFFLOAD_STATUS = 67,
+	OP_READ_PLUS = 68,
+	OP_SEEK = 69,
+	OP_WRITE_SAME = 70,
+	OP_CLONE = 71,
+
+	/* xattr support (RFC8726) */
+	OP_GETXATTR                = 72,
+	OP_SETXATTR                = 73,
+	OP_LISTXATTRS              = 74,
+	OP_REMOVEXATTR             = 75,
+
+	OP_ILLEGAL = 10044,
+};
+```
+
+## 2.3 服务器端改变方法计数
+
+```c
+kthread
+  nfsd
+    svc_process
+      svc_process_common
+        nfsd_dispatch
+          nfsd4_proc_compound
+            nfsd4_increment_op_stats
+```
+
+==待仔细研究nfsd4_proc_compound函数！！！==
+
+==Q：一次cat hello.txt操作多次执行nfsd4_increment_op_stats函数？==
+
+```c
+static __be32 nfsd4_proc_compound(struct svc_rqst *rqstp)
+{
+}
+```
+
+2
+
+```c
+static inline void nfsd4_increment_op_stats(u32 opnum)
+{
+	if (opnum >= FIRST_NFS4_OP && opnum <= LAST_NFS4_OP)
+		percpu_counter_inc(&nfsdstats.counter[NFSD_STATS_NFS4_OP(opnum)]);
+}
+```
+
+3
+
+```c
+struct nfsd4_op {
+	u32					opnum;
+	...
+}
+```
+
