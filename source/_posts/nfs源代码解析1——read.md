@@ -21,30 +21,30 @@ generic_file_read_iter有两种读的方式，分为直接IO与缓存IO，IO类�
 
 ```c
 read
-	ksys_read
-		vfs_read
-			new_sync_read
-				call_read_iter
-					nfs_file_read
-						generic_file_read_iter
-							filemap_read
-								filemap_get_pages
-									page_cache_sync_readahead
-										page_cache_sync_ra
-											ondemand_readahead
-												page_cache_ra_order
-													do_page_cache_ra
-														page_cache_ra_unbounded
-															read_pages
-																nfs_readahead
-    																nfs_pageio_complete_read
-																		nfs_pageio_complete
-																			nfs_pageio_complete_mirror
-																				nfs_pageio_doio
-																					nfs_generic_pg_pgios
-																						nfs_initiate_pgio
-																							rpc_run_task
-																								rpc_execute
+  ksys_read
+    vfs_read
+      new_sync_read
+        call_read_iter
+          nfs_file_read
+            generic_file_read_iter
+              filemap_read
+                filemap_get_pages
+                  page_cache_sync_readahead
+                    page_cache_sync_ra
+                      ondemand_readahead
+                        page_cache_ra_order
+                          do_page_cache_ra
+                            page_cache_ra_unbounded
+                              read_pages
+                                nfs_readahead
+                                  nfs_pageio_complete_read
+                                    nfs_pageio_complete
+                                      nfs_pageio_complete_mirror
+                                        nfs_pageio_doio
+                                          nfs_generic_pg_pgios
+                                            nfs_initiate_pgio
+                                              rpc_run_task
+                                                rpc_execute
 ```
 
 # 2. Server
@@ -55,11 +55,11 @@ read
 
 ```c
 kthread
-	nfsd
-		svc_process
-			svc_process_common
-				nfsd_dispatch
-					nfsd4_proc_compound
-						nfsd4_read
+  nfsd
+    svc_process
+      svc_process_common
+        nfsd_dispatch
+          nfsd4_proc_compound
+            nfsd4_read
 ```
 
