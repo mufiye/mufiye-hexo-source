@@ -11,7 +11,7 @@ tags: [源码解析,文件系统,nfs,open]
 
 ### 1）第一次cat
 
-**Q：为什么我一次cat shell命令会执行三次open？**
+[gdb log file](https://github.com/mufiye/mufiye_backup/blob/master/nfs/nfs_open_gdb_log.txt)
 
 ```c
 open
@@ -34,19 +34,6 @@ open
                                   nfs4_call_sync_custom
                                     rpc_run_task
                                       rpc_execute
-    
-/* 第二次执行open operation */
-open
-  do_sys_open
-    do_sys_openat2
-      do_filp_open
-        path_openat
-          link_path_walk
-            may_lookup
-              inode_permission
-                do_inode_permission
-                  nfs_permission
-                    nfs_do_access
                       nfs4_proc_access
                         _nfs4_proc_access
                           nfs4_call_sync
@@ -55,12 +42,6 @@ open
                                 nfs4_call_sync_custom
                                   rpc_run_task
                                     rpc_execute
-/* 第三次执行open operation */
-open
-  do_sys_open
-    do_sys_openat2
-      do_filp_open
-        path_openat
           open_last_lookups
             lookup_open
               atomic_open
