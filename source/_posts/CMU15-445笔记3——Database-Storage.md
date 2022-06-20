@@ -228,10 +228,39 @@ HTAP是指hyper transaction analytical processing混合事务分析处理，它�
 
 每一个值与其tuple id一起存储，我们通过一个map来查找这个匹配项。
 
-### 3.3.4 Conclusion
+### 3.3.4 Bifurcated Environment
+
+* OLTP Data Silos（数据孤岛）
+* OLAP Data Warehouse（数据仓库）
+
+#### 1）OLTP + OLAP
+
+<img src="images/OLTP with OLAP.png" alt="OLTP with OLAP" style="zoom: 50%;" />
+
+在每个数据孤岛上做OLTP，然后就可以进行被称为ETL的操作，该操作是指从前端数据库中取出数据，将数据进行清洗处理，接着将处理后的数据传入到后端的数据仓库。之后在后端的数据仓库进行OLAP，后端数据仓库可以将分析得到的结果存入到前端的数据孤岛上。
+
+#### 2）HTAP
+
+<img src="images/HATP.png" alt="HATP" style="zoom: 50%;" />
+
+HATP在前端的数据孤岛上既做OLTP，也做OLAP。
+
+### 3.3.5 Conclusion
 
 对症下药，混合是一个bad idea。
 
 * OLTP = Row Store
 
 * OLAP = Column Store
+
+## 3.4 Some Think
+
+想要最小化在磁盘上执行查询速度缓慢带来的影响。
+
+### 3.4.1 Spatial Control
+
+Spatial Control是指我们实际将数据写入到了磁盘的哪里，我们应当尽可能地使要一起用的page在磁盘上的物理位置接近。
+
+### 3.4.2 Temporal Control
+
+Temporal Control是指什么时候将数据读到内存之中，并且如果它们被修改了，我们什么时候将其回写到磁盘之中。其目标是减少我们必须要从磁盘中读取数据的次数。
