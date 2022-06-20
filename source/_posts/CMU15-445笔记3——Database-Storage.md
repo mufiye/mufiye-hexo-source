@@ -236,7 +236,7 @@ HTAP是指hyper transaction analytical processing混合事务分析处理，它�
 在每个数据孤岛上做OLTP，然后就可以进行被称为ETL的操作，该操作是指从前端数据库中取出数据，将数据进行清洗处理，接着将处理后的数据传入到后端的数据仓库。之后在后端的数据仓库进行OLAP，后端数据仓库可以将分析得到的结果存入到前端的数据孤岛上。
 
 #### 2）HTAP
-![HATP](images/HATP.png"){:height="50%" width="50%"}
+![HATP](images/HATP.png")
 
 HATP在前端的数据孤岛上既做OLTP，也做OLAP。
 
