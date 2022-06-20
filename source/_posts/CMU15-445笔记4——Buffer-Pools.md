@@ -11,13 +11,12 @@ categories: 数据库
 
 我们为buffer pool分配一块大的内存，并将我们从磁盘中读取到的所有page放入里面。这段内存是由数据库系统来控制的，而不是操作系统。我们将buffer pool分为一个个frame来存放page。当执行引擎请求数据时，如果在buffer pool中找不到对应的数据，DBMS会从磁盘上取出相应的page存放到buffer pool中的frame中，page在frame中存放的顺序并不是按照其在磁盘上的顺序，因此我们需要一个indirection层来寻找相应的page。
 
-<img src="images/Buffer-Pool.png" alt="Buffer Pool" style="zoom:67%;" />
+![Buffer-Pool](images/Buffer-Pool.png)
 
 <center>图1：Buffer Pool Organization</center>
 
 ### 1.1.1 Buffer Pool meta-data
-
-<img src="images/Page-Table.png" alt="Page Table" style="zoom:67%;" />
+![Page-Table](images/Page-Table.png)
 
 <center>图2：Page Table of Buffer Pool</center>
 Page Table用来追踪存放在内存中的page，Page table是一个hash table。如果我们想找一个特定的page，通过page表和page id，我们就可以知道这个page在哪个frame中。
@@ -25,8 +24,7 @@ Page Table用来追踪存放在内存中的page，Page table是一个hash table�
 * **Dirty Flag：**该flag用来指示当我们从磁盘中读取到这个page后，这个page是否被修改。
 * **Pin/Reference Counter：**pin计数或者说是引用计数，它用来追踪想要使用该page的当前线程数量或者是正在查询该page的数量，这意味着DBMS不希望该page被移除或者是交换回磁盘。
 * **Other meta data：**比如使用日志来记录哪些page被修改。
-
-<img src="images/Pin-and-latch.png" alt="Pin and latch" style="zoom:67%;" />
+![Pin-and-latch](images/Pin-and-latch.png)
 
 <center>图3：Pin and Latch</center>
 图中的pin表示DBMS不希望该page被移除，图中的锁用来解决同步互斥问题。

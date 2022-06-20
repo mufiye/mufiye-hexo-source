@@ -22,7 +22,7 @@ style:
   favicon: /images/logo.png
 
   # Article image align position, value: left | center
-  article_img_align: left
+  article_img_align: center
 
   # Left side width
   left_side_width: 260px

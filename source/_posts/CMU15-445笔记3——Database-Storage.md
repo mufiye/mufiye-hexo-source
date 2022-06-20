@@ -102,7 +102,7 @@ page layout是指如何组织储存在page中的数据。
 <center>图2：one slotted page</center>
 
 每一个tuple可以用一个record id来唯一标识，最常用的record id为page id + slot offset。
-{:height="67%" width="67%"}
+
 ### 2.2.3 Log-structured
 
 该方法并不是把所有的tuple都存放到page中，而是去存储如何创建tuple以及如何修改tuple的相关信息（也就是日志记录）。（这其实和LFS这个文件系统思路一致。）
@@ -142,7 +142,7 @@ tuple其实就是一个字节序列。
 ## 3.1 Data Representation
 
 ### 3.1.1 Storage of different data type
-![data-representation](images/data-representation.png){:height="67%" width="67%"}
+![data-representation](images/data-representation.png)
 <center>图3：数据表示</center>
 
 * variable-precision number（IEEE-754标准）：处理速度更快，但是有取舍的误差。
@@ -154,8 +154,8 @@ tuple其实就是一个字节序列。
 
 如何存储size比一页要大的值。DBMS可以使用额外的overflow page来存储这些页。如果一个tuple中有一个size比page size要大的值，该值会放在overflow page中，而该tuple中在该值的位置会存放一个指向overflow page中该值的指针（overflow page的page id + slot id）。
 
-![overflow-page](images/overflow-page.png){:height="67%" width="67%"}
-如果该overflow page也无法存放该值，其会类似地将该值存放到其它page中，该overflow page存放指向那个位置的指针（和前面一样，也是个record id）。
+![overflow-page](images/overflow-page.png)
+如果该overflow page也无法存放该值，其会类似地将该值存放到其它page中，该overflow page存放指向那个位置的指针（和前面一样，也是个record id)。
 
 #### 2）External value storage
 
@@ -231,12 +231,12 @@ HTAP是指hyper transaction analytical processing混合事务分析处理，它�
 * OLAP Data Warehouse（数据仓库）
 
 #### 1）OLTP + OLAP
-![OLTP-with-OLAP](images/OLTP-with-OLAP.png){:height="50%" width="50%"}
+![OLTP-with-OLAP](images/OLTP-with-OLAP.png)
 
 在每个数据孤岛上做OLTP，然后就可以进行被称为ETL的操作，该操作是指从前端数据库中取出数据，将数据进行清洗处理，接着将处理后的数据传入到后端的数据仓库。之后在后端的数据仓库进行OLAP，后端数据仓库可以将分析得到的结果存入到前端的数据孤岛上。
 
 #### 2）HTAP
-![HATP](images/HATP.png){:height="50%" width="50%"}
+![HATP](images/HATP.png)
 
 HATP在前端的数据孤岛上既做OLTP，也做OLAP。
 
