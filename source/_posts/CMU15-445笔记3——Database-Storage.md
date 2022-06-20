@@ -98,7 +98,7 @@ page layout是指如何组织储存在page中的数据。
 
 这是常用的scheme。使用该方法存储数据，在头部除了存储元数据还要存储slot array，在尾部存储我们想要保存的tuple。Slot array将一个特定的slot映射到page上的某个偏移量上，根据这个偏移量，DBMS可以得到想要获取的那个tuple。（也有可能会产生空隙，DBMS可以压缩page中的空间。）
 
-<img src="images/slotted pages.png" alt="slotted pages" style="zoom: 67%;" />
+<img src="images/slotted-pages.png" alt="slotted pages" style="zoom: 67%;" />
 
 <center>图2：one slotted page</center>
 
@@ -144,7 +144,8 @@ tuple其实就是一个字节序列。
 
 ### 3.1.1 Storage of different data type
 
-<img src="images/data representation.png" alt="data representation" style="zoom:67%;" />
+<img src="images/data-representation.png" alt="data representation" style="zoom:67%;" />
+
 <center>图3：数据表示</center>
 
 * variable-precision number（IEEE-754标准）：处理速度更快，但是有取舍的误差。
@@ -156,7 +157,7 @@ tuple其实就是一个字节序列。
 
 如何存储size比一页要大的值。DBMS可以使用额外的overflow page来存储这些页。如果一个tuple中有一个size比page size要大的值，该值会放在overflow page中，而该tuple中在该值的位置会存放一个指向overflow page中该值的指针（overflow page的page id + slot id）。
 
-<img src="images/overflow page.png" alt="overflow page" style="zoom:67%;" />
+<img src="images/overflow-page.png" alt="overflow page" style="zoom:67%;" />
 
 如果该overflow page也无法存放该值，其会类似地将该值存放到其它page中，该overflow page存放指向那个位置的指针（和前面一样，也是个record id）。
 
@@ -235,7 +236,7 @@ HTAP是指hyper transaction analytical processing混合事务分析处理，它�
 
 #### 1）OLTP + OLAP
 
-<img src="images/OLTP with OLAP.png" alt="OLTP with OLAP" style="zoom: 50%;" />
+<img src="images/OLTP-with-OLAP.png" alt="OLTP with OLAP" style="zoom: 50%;" />
 
 在每个数据孤岛上做OLTP，然后就可以进行被称为ETL的操作，该操作是指从前端数据库中取出数据，将数据进行清洗处理，接着将处理后的数据传入到后端的数据仓库。之后在后端的数据仓库进行OLAP，后端数据仓库可以将分析得到的结果存入到前端的数据孤岛上。
 
