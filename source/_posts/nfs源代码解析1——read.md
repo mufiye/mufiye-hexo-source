@@ -220,8 +220,3 @@ https://github.com/mufiye/mufiye_backup/blob/master/nfs/nfs_client_read_disconne
 ## 2.3 poweroff
 
 https://github.com/mufiye/mufiye_backup/blob/master/nfs/nfs_client_read_poweroff_gdb_log.txt
-# 3. 下一步计划
-
-1. 《深入理解linux内核》—— vfs read
-2. 《深入理解linux内核》—— 第16章之读写文件
-3. 《深入理解linux内核》—— ext2文件系统（看看有没有时间）
