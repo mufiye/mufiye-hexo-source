@@ -33,6 +33,9 @@ write?
                   filemap_fdatawrite_wbc
                     do_writepages
                       nfs_writepages
+                        nfs_pageio_init_write
+    					  nfs_initiate_pgio
+                            nfs_pageio_init /* 赋值rw_ops为nfs_rw_write_ops */
                         nfs_pageio_complete
                           nfs_pageio_complete_mirror
                             nfs_pageio_doio

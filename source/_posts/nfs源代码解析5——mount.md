@@ -251,11 +251,7 @@ mount
 
 ## 2. Server
 
-**服务器端执行了哪些函数？如何使用gdb追踪？**
-
-```c
-
-```
+https://github.com/mufiye/mufiye_backup/blob/master/nfs/nfs_server_mount_gdb_log.txt
 
 # Unmount
 
@@ -290,9 +286,4 @@ task_work_run
 
 ## 2. Server
 
-**服务器端执行了哪些函数？如何使用gdb追踪？**
-
-```c
-
-```
-
+https://github.com/mufiye/mufiye_backup/blob/master/nfs/nfs_server_unmount.txt

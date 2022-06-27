@@ -107,6 +107,188 @@ enum {
 ```c
 __rpc_execute
   call_start
+    struct rpc_clnt	*clnt = task->tk_client;
+	int idx = task->tk_msg.rpc_proc->p_statidx;
+	...
+    clnt->cl_program->version[clnt->cl_vers]->counts[idx]++;
+```
+
+```c
+struct rpc_task {
+	...
+	struct rpc_message	tk_msg;		/* RPC call info */
+    ...
+}
+
+struct rpc_message {
+	const struct rpc_procinfo *rpc_proc;	/* Procedure information */
+	...
+};
+
+struct rpc_procinfo {
+	...
+	u32			p_statidx;	/* Which procedure to account */
+	...
+};
+```
+
+有对应的函数会在运行的过程中对对应属性赋值（以read举例）：
+
+```c
+const struct rpc_procinfo nfs4_procedures[] = {
+	PROC(READ,		enc_read,		dec_read),
+    ...
+}
+```
+
+```c
+read
+  ksys_read
+    vfs_read
+      new_sync_read
+        call_read_iter /* file->f_op->read_iter */
+          nfs_file_read /* 读取nfs file */
+            generic_file_read_iter
+              filemap_read /* Read data from the page cache. */
+                filemap_get_pages
+                  page_cache_sync_readahead /* generic file readahead */
+                    page_cache_sync_ra
+                      ondemand_readahead
+                        page_cache_ra_order
+                          do_page_cache_ra
+                            page_cache_ra_unbounded
+                              read_pages
+                                nfs_readahead  /* 页高速缓存读 */
+    							readahead_page /* Get the next page to read. */
+    							readpage_async_filler /* 填充读取page的request */
+                                  nfs_pageio_complete_read 
+                                    nfs_pageio_complete
+                                      nfs_pageio_complete_mirror
+                                        nfs_pageio_doio
+                                          nfs_generic_pg_pgios 
+                                            nfs_initiate_pgio
+                                              rpc_run_task
+                                                rpc_execute
+```
+
+***补充：操作计数统计***
+
+**read：**
+
+```c
+nfs_initiate_pgio  /* hdr->rw_ops->rw_initiate(...); */
+  nfs_initiate_read  /* rpc_ops->read_setup(hdr, msg); */
+    nfs4_proc_read_setup   /* msg->rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_READ]; */
+```
+
+**write：**
+
+```c
+nfs_initiate_pgio  /* hdr->rw_ops->rw_initiate(...); */
+  nfs_initiate_write  /* rpc_ops->write_setup(hdr, msg, &task_setup_data->rpc_client); */
+    nfs4_proc_write_setup  /* msg->rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_WRITE]; */
+```
+
+**open：**
+
+```c
+nfs4_run_open_task  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_OPEN], */
+```
+
+**Access：**
+
+```c
+_nfs4_proc_access  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_ACCESS], */
+```
+
+**GetAttr：**
+
+```c
+_nfs4_proc_getattr  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_GETATTR], */
+```
+
+**Close：**
+
+```c
+nfs4_do_close  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_CLOSE], */
+```
+
+**Sequence：**（?）
+
+```c
+_nfs41_proc_sequence  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_SEQUENCE], */
+```
+
+**Delegation：**（?）
+
+```c
+_nfs4_proc_delegreturn  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_DELEGRETURN], */
+```
+
+**Create Session：**
+
+```c
+_nfs4_proc_create_session /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_CREATE_SESSION] */
+```
+
+**DESTROY_SESSION：**
+
+```c
+nfs4_proc_destroy_session /* ... = &nfs4_procedures[NFSPROC4_CLNT_DESTROY_SESSION], */
+```
+
+**EXCHANGE_ID：**（?）
+
+```c
+nfs4_run_exchange_id  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_EXCHANGE_ID], */
+```
+
+**DESTROY_CLIENTID：**（?）
+
+```c
+_nfs4_proc_destroy_clientid /* ... = &nfs4_procedures[NFSPROC4_CLNT_DESTROY_CLIENTID], */
+```
+
+**Reclaim Complete：**（?）
+
+```c
+nfs41_proc_reclaim_complete /* ... = nfs4_procedures[NFSPROC4_CLNT_RECLAIM_COMPLETE], */
+```
+
+**SECINFO_NO_NAME：**（?）
+
+```c
+_nfs41_proc_secinfo_no_name  /* ... = &nfs4_procedures[NFSPROC4_CLNT_SECINFO_NO_NAME] */
+```
+
+**LOOKUP_ROOT：**（?）
+
+```c
+_nfs4_lookup_root  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_LOOKUP_ROOT], */
+```
+
+**SERVER_CAPS：**（?）
+
+```c
+_nfs4_server_capabilities  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_SERVER_CAPS], */
+```
+
+**FSINFO：**（?）
+
+```c
+_nfs4_do_fsinfo  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_FSINFO], */
+```
+
+**PATHCONF：**（?）
+
+```c
+_nfs4_proc_pathconf  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_PATHCONF], */
+```
+
+**LOOKUP：**（?）
+
+```c
+_nfs4_proc_lookup  /* .rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_LOOKUP], */
 ```
 
 # 2. Server
@@ -220,35 +402,15 @@ kthread
     svc_process
       svc_process_common
         nfsd_dispatch
-          nfsd4_proc_compound
+          nfsd4_proc_compound  /* 处理复合请求（多种请求混合） */
             nfsd4_increment_op_stats
 ```
 
-**待仔细研究nfsd4_proc_compound函数！！！**
-
-**Q：一次cat hello.txt操作多次执行nfsd4_increment_op_stats函数？**
+每一个循环处理一个操作
 
 ```c
-static __be32 nfsd4_proc_compound(struct svc_rqst *rqstp)
-{
-}
-```
-
-2
-
-```c
-static inline void nfsd4_increment_op_stats(u32 opnum)
-{
-	if (opnum >= FIRST_NFS4_OP && opnum <= LAST_NFS4_OP)
-		percpu_counter_inc(&nfsdstats.counter[NFSD_STATS_NFS4_OP(opnum)]);
-}
-```
-
-3
-
-```c
-struct nfsd4_op {
-	u32					opnum;
+while (!status && resp->opcnt < args->opcnt) {
+	op = &args->ops[resp->opcnt++];
 	...
 }
 ```
