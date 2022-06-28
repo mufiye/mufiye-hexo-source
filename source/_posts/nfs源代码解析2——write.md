@@ -64,13 +64,19 @@ kthread
           nfsd4_proc_compound
     		nfsd4_write
               nfsd_vfs_write
+                vfs_iter_write   /* 将写请求的携带的文件数据写入到文件中，完成写入 */
+                  do_iter_write
+            nfsd4_encode_operation
+              nfsd4_encode_write   /* 编码写请求的reply报文 */
+                xdr_reserve_space  /* 保留出一份空间用于发送数据 */
+                xdr_encode_opaque_fixed  /* 将写请求的realy填充进上面保留的空间中 */
 ```
 
 ```c
 nfsd4_write
   nfs4_preprocess_stateid_op  /* Checks for stateid operations */
   svc_fill_write_vector  /* Construct data argument for VFS write call */
-  nfsd_vfs_write
-  nfsd_file_put
+  nfsd_vfs_write  /* 将数据写入到文件中并成功状态或错误信息 */
+  nfsd_file_put  /* 释放nfsd_file资源 */
 ```
 
