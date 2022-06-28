@@ -36,7 +36,7 @@ open
                                       rpc_execute
                       nfs4_proc_access /* 循环体执行_nfs4_proc_access */
                         _nfs4_proc_access /* 首先检查delegation,无效则发起access请求并更新本地缓存 */
-                          nfs4_call_sync
+                          nfs4_call_sync  /* 用于发起rpc请求 */
                             nfs4_call_sync_sequence
                               nfs4_do_call_sync
                                 nfs4_call_sync_custom
@@ -56,7 +56,7 @@ open
                                 rpc_execute
 ```
 
-#### nfs_do_access
+#### nfs_do_access（access operation）
 
 nfs_do_access函数首先使用nfs_access_get_cached函数在文件索引的红黑树中查找对应文件的访问权限，如果找到了就直接检查权限并返回；如果没有找到就向服务器发起access请求并将请求到的权限信息添加到红黑树中，之后检查权限并返回。
 
@@ -73,7 +73,72 @@ struct nfs_access_entry {
 };
 ```
 
-#### nfs_atomic_open
+#### open相关的结构体
+
+nfs4_opendata是nfs用于open请求的数据，nfs4_state对应的是某个文件的状态，nfs4_state_owner对应的是多个状态（nfs4_state）的持有者（可以理解为一个客户端用户）。
+
+##### 1）nfs4_opendata
+
+```c
+struct nfs4_opendata {
+	struct kref kref;  /* 该opendata的引用计数 */
+	struct nfs_openargs o_arg;  /* open请求的参数 */
+	struct nfs_openres o_res;   /* open请求的结果 */
+	struct nfs_open_confirmargs c_arg;  /* open confirm请求的参数 */
+	struct nfs_open_confirmres c_res;   /* open confirm请求的结果 */
+	struct nfs4_string owner_name;      /* open的文件的所有者 */
+	struct nfs4_string group_name;      /* open的文件的所在组 */
+	struct nfs4_label *a_label;         /* ？ */
+	struct nfs_fattr f_attr;            /* nfs文件属性 */
+	struct dentry *dir;                 /* open的文件所在的目录 */
+	struct dentry *dentry;              /* open的文件的目录项 */
+	struct nfs4_state_owner *owner;     /* 表示打开状态的所有者 */
+	struct nfs4_state *state;           /* 表示该open请求的状态 */
+    
+	...
+};
+```
+
+##### 2）nfs4_state
+
+```c
+struct nfs4_state {
+	struct list_head open_states;	/* List of states for the same state_owner */
+	struct list_head inode_states;	/* List of states for the same inode */
+	struct list_head lock_states;	/* List of subservient lock stateids */
+
+	struct nfs4_state_owner *owner;	/* Pointer to the open owner */
+	struct inode *inode;		/* Pointer to the inode */
+    
+    nfs4_stateid stateid;		/* Current stateid: may be delegation */
+	nfs4_stateid open_stateid;	/* OPEN stateid */
+    
+    ...    
+}
+```
+
+##### 3）nfs4_state_owner
+
+```c
+struct nfs4_state_owner {
+	struct nfs_server    *so_server;   /* 所属的nfs_server */
+	struct list_head     so_lru;	   /* 对应于nfs_server中的state_owners_lru链表元素，该链表用于保存空闲的nfs4_state_owner */
+	unsigned long        so_expires;   /* 挂载到上述链表中的时间，也就是过期时间 */
+	struct rb_node	     so_server_node;  /* nfs_server的所有nfs4_state_owner被加到红黑树中，这个对应的是一个节点 */
+
+	const struct cred    *so_cred;	 /* Associated cred，用户信息 */
+
+	spinlock_t	     so_lock;        
+	atomic_t	     so_count;
+	unsigned long	     so_flags;
+	struct list_head     so_states;
+	struct nfs_seqid_counter so_seqid;
+	seqcount_spinlock_t  so_reclaim_seqcount;
+	struct mutex	     so_delegreturn_mutex;
+};
+```
+
+#### nfs_atomic_open（open operation）
 
 
 
@@ -88,8 +153,8 @@ open
           do_open
             vfs_open
               do_dentry_open  /* 上面都是vfs的操作 */
-                nfs4_file_open  /* nfs打开文件 */
-                  nfs4_atomic_open /* 原子性地打开一个文件 */
+                nfs4_file_open
+                  nfs4_atomic_open 
     				nfs4_label_init_security
                     nfs4_do_open
                       _nfs4_do_open
@@ -99,14 +164,6 @@ open
                               rpc_run_task
                                 rpc_execute
 ```
-
-* ***Q：什么是原子性地打开文件？***
-
-* A：
-* ***Q：_nfs4_open_and_get_state获取的是什么状态？***
-* A：
-* ***Q：打开文件的过程中发送了什么请求？***
-* A：
 
 # 2. Server
 
@@ -123,18 +180,14 @@ kthread
       svc_process_common
         nfsd_dispatch
           nfsd4_proc_compound
-            nfsd4_open  /* 服务器端打开，重点研究 */
+            nfsd4_open  
     		nfsd4_encode_operation
-              nfsd4_encode_open  /* 将open operation的返回信息编码，重点研究 */
+              nfsd4_encode_open
 ```
-* ***Q：nfsd4_open和nfsd4_encode_open做了什么？***
-
-* A：
-
 ### 2）第二次cat
 
 https://github.com/mufiye/mufiye_backup/blob/master/nfs/nfs_server_cat_second_gdb_log.txt
 
 * ***Q：服务器端没有调用nfsd4_open函数？***
 
-* A：
+* A：应该是读取了本地缓存，所以没有像服务器端发送open请求。

@@ -156,7 +156,7 @@ struct rpc_xprt {
 };
 ```
 ## rpc_task
-代表一个task,内部是一个有限状态机。
+rpc_task表示一个RPC请求的整个处理过程，内部是一个有限状态机（一步对应的是一个rpc task的某个状态处理）。
 
 ```c
 struct rpc_task {
@@ -212,16 +212,33 @@ struct rpc_task {
 				tk_rebind_retry : 2;
 };
 ```
+## rpc_procinfo
+
+rpc_procinfo表示一个rpc例程
+
+```c
+struct rpc_procinfo {
+	u32			p_proc;	        /* RPC例程编号 */
+	kxdreproc_t		p_encode;	/* XDR编码函数，负责将RPC请求的信息以XDR的格式封装到报文中 */
+	kxdrdproc_t		p_decode;	/* XDR解码函数，负责解码RPC报文 */
+	unsigned int		p_arglen;	/* argument hdr length (u32) */
+	unsigned int		p_replen;	/* reply hdr length (u32) */
+	unsigned int		p_timer;	/* Which RTT timer to use */
+	u32			p_statidx;	        /* Which procedure to account */
+	const char *		p_name;		/* name of procedure */
+};
+```
+
 ## rpc_message
 
-rpc message里面包括传输的参数，返回的参数地址，发生/接收时候用到编码/解码函数等。
+rpc message里面包括传输的参数，返回的参数地址，发生/接收时候用到编码/解码函数。
 
 ```c
 struct rpc_message {
-	const struct rpc_procinfo *rpc_proc;	/* Procedure information */
-	void *			rpc_argp;	/* Arguments */
-	void *			rpc_resp;	/* Result */
-	const struct cred *	rpc_cred;	/* Credentials */
+	const struct rpc_procinfo *rpc_proc;	/* Procedure information，对应的例程 */
+	void *			rpc_argp;	/* Arguments，参数 */
+	void *			rpc_resp;	/* Result，结果 */
+	const struct cred *	rpc_cred;	/* Credentials，用户信息 */
 };
 ```
 

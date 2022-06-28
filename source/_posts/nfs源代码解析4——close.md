@@ -14,7 +14,7 @@ close
       __fput
         nfs_file_release  /* 释放一个nfs文件 */
           nfs_file_clear_open_context  /* 清空打开的context */ 
-            put_nfs_open_context_sync
+            put_nfs_open_context_sync  /* __put_nfs_open_context的封装 */
               __put_nfs_open_context
                 nfs4_close_context
                   nfs4_close_sync
@@ -22,14 +22,59 @@ close
                       nfs4_do_close  /* 关闭文件的请求 */
                         rpc_run_task
                           rpc_execute
+          nfs_fscache_release_file   /* 函数体为空？*/
 ```
 
-* ***Q：为什么nfs_fscache_release_file函数是空的？***
+## 重点结构体
 
-* A：
+### 1）nfs_open_context
 
-* ***Q：关闭文件的过程中发送了什么请求？***
-* A：
+```c
+struct nfs_open_context {
+	struct nfs_lock_context lock_context;
+	fl_owner_t flock_owner;
+	struct dentry *dentry;
+	const struct cred *cred;
+	struct rpc_cred __rcu *ll_cred;	/* low-level cred - use to check for expiry */
+	struct nfs4_state *state;
+	fmode_t mode;
+
+	unsigned long flags;
+#define NFS_CONTEXT_RESEND_WRITES	(1)
+#define NFS_CONTEXT_BAD			(2)
+#define NFS_CONTEXT_UNLOCK	(3)
+#define NFS_CONTEXT_FILE_OPEN		(4)
+	int error;
+
+	struct list_head list;
+	struct nfs4_threshold	*mdsthreshold;
+	struct rcu_head	rcu_head;
+};
+```
+
+### 2）nfs4_closedata
+
+```c
+struct nfs4_closedata {
+	struct inode *inode;          /* 对应的inode */
+	struct nfs4_state *state;     /* 对应的state */
+	struct nfs_closeargs arg;     /* close请求的参数 */
+	struct nfs_closeres res;      /* close请求的结果 */
+	struct {
+		struct nfs4_layoutreturn_args arg;
+		struct nfs4_layoutreturn_res res;
+		struct nfs4_xdr_opaque_data ld_private;
+		u32 roc_barrier;
+		bool roc;
+	} lr;
+	struct nfs_fattr fattr;       /* nfs文件属性 */
+	unsigned long timestamp;      /* 时间戳 */
+};
+```
+
+## nfs_file_release
+
+
 
 # 2. Server
 
@@ -44,6 +89,3 @@ kthread
             nfsd4_encode_operation
               nfsd4_encode_close
 ```
-
-* ***Q：服务器做了哪些处理？***
-* A：
