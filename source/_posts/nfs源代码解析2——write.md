@@ -62,6 +62,15 @@ kthread
       svc_process_common
         nfsd_dispatch
           nfsd4_proc_compound
-            nfsd4_write
+    		nfsd4_write
+              nfsd_vfs_write
+```
+
+```c
+nfsd4_write
+  nfs4_preprocess_stateid_op  /* Checks for stateid operations */
+  svc_fill_write_vector  /* Construct data argument for VFS write call */
+  nfsd_vfs_write
+  nfsd_file_put
 ```
 
